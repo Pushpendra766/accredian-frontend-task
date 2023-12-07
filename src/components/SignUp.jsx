@@ -15,7 +15,8 @@ import { defaultTheme } from "../constants";
 import validateForm from "../utils/validation";
 import axios from "axios";
 
-export default function SignUp({ updateIsSignIn }) {
+export default function SignUp({ updateIsSignIn, updateIsLoggedIn }) {
+  const [isUserExists, setIsUserExists] = React.useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -34,7 +35,12 @@ export default function SignUp({ updateIsSignIn }) {
           password: dataObject.password,
         })
         .then((res) => {
-          console.log(res);
+          if (res?.data?.err?.errno === 1062) {
+            console.log("user already exist");
+            setIsUserExists(true);
+          } else {
+            updateIsLoggedIn(true);
+          }
         });
     } else {
       console.log("Is invalid");
@@ -98,6 +104,12 @@ export default function SignUp({ updateIsSignIn }) {
                 />
               </Grid>
             </Grid>
+            {isUserExists && (
+              <Typography sx={{ textAlign: "left", color: "red" }}>
+                * User already exists!
+              </Typography>
+            )}
+
             <Button
               type="submit"
               fullWidth

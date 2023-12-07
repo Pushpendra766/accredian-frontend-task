@@ -13,7 +13,8 @@ import Copyright from "./Copyright";
 import { defaultTheme } from "../constants";
 import axios from "axios";
 
-export default function SignIn({ updateIsSignIn }) {
+export default function SignIn({ updateIsSignIn, updateIsLoggedIn }) {
+  const [isUserNotFound, setIsUserNotFound] = React.useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -25,6 +26,11 @@ export default function SignIn({ updateIsSignIn }) {
       })
       .then((response) => {
         console.log(response);
+        if (response?.data?.length >= 1) {
+          updateIsLoggedIn(true);
+        } else {
+          setIsUserNotFound(true);
+        }
       });
   };
 
@@ -72,6 +78,11 @@ export default function SignIn({ updateIsSignIn }) {
               id="password"
               autoComplete="current-password"
             />
+            {isUserNotFound && (
+              <Typography sx={{ textAlign: "left", color: "red" }}>
+                * Wrong username or password!
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth

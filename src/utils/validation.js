@@ -7,7 +7,6 @@ const userSchema = yup.object().shape({
 
 async function validateForm(dataObject) {
   const isValid = await userSchema.isValid(dataObject);
-  console.log(dataObject);
   return isValid;
 }
 
