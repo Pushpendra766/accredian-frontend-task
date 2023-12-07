@@ -12,16 +12,36 @@ import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import Copyright from "./Copyright";
 import { defaultTheme } from "../constants";
+import * as yup from "yup";
 
 export default function SignUp({ updateIsSignIn }) {
-  const handleSubmit = (event) => {
+  const userSchema = yup.object().shape({
+    username: yup.string().required(),
+    email: yup.string().email().required(),
+    password: yup.string().min(8).required(),
+  });
+
+  async function validateForm(dataObject) {
+    const isValid = await userSchema.isValid(dataObject);
+    console.log(dataObject);
+    return isValid;
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+
+    let dataObject = {
       username: data.get("username"),
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+    const isValid = await validateForm(dataObject);
+    if (isValid) {
+      console.log("Is valid");
+    } else {
+      console.log("Is invalid");
+    }
   };
 
   return (
