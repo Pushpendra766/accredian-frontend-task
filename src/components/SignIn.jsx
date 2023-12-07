@@ -11,15 +11,21 @@ import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import Copyright from "./Copyright";
 import { defaultTheme } from "../constants";
+import axios from "axios";
 
 export default function SignIn({ updateIsSignIn }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    axios
+      .post("http://localhost:3001/login", {
+        userId: data.get("userId"),
+        password: data.get("password"),
+      })
+      .then((response) => {
+        console.log(response);
+      });
   };
 
   return (
@@ -28,7 +34,7 @@ export default function SignIn({ updateIsSignIn }) {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 4,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -50,10 +56,10 @@ export default function SignIn({ updateIsSignIn }) {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="userId"
+              label="Username or Email"
+              name="userId"
+              autoComplete="userId"
               autoFocus
             />
             <TextField

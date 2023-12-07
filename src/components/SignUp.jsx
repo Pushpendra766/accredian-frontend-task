@@ -12,21 +12,10 @@ import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import Copyright from "./Copyright";
 import { defaultTheme } from "../constants";
-import * as yup from "yup";
+import validateForm from "../utils/validation";
+import axios from "axios";
 
 export default function SignUp({ updateIsSignIn }) {
-  const userSchema = yup.object().shape({
-    username: yup.string().required(),
-    email: yup.string().email().required(),
-    password: yup.string().min(8).required(),
-  });
-
-  async function validateForm(dataObject) {
-    const isValid = await userSchema.isValid(dataObject);
-    console.log(dataObject);
-    return isValid;
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -38,7 +27,15 @@ export default function SignUp({ updateIsSignIn }) {
     };
     const isValid = await validateForm(dataObject);
     if (isValid) {
-      console.log("Is valid");
+      axios
+        .post("http://localhost:3001/register", {
+          username: dataObject.username,
+          email: dataObject.email,
+          password: dataObject.password,
+        })
+        .then((res) => {
+          console.log(res);
+        });
     } else {
       console.log("Is invalid");
     }
@@ -50,7 +47,7 @@ export default function SignUp({ updateIsSignIn }) {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 4,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
